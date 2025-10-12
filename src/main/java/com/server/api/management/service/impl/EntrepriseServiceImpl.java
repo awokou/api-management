@@ -2,6 +2,7 @@ package com.server.api.management.service.impl;
 
 import com.server.api.management.entity.Entreprise;
 import com.server.api.management.exception.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.server.api.management.repository.EntrepriseRepository;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Date;
 
 @Service
+@Transactional
 public class EntrepriseServiceImpl implements EntrepriseService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntrepriseServiceImpl.class);
@@ -29,7 +31,8 @@ public class EntrepriseServiceImpl implements EntrepriseService {
     @Override
     public Entreprise getEntrepriseById(Long id) {
         LOGGER.info("request to find entreprise by id {}", id);
-        return entrepriseRepository.getOne(id);
+        return entrepriseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Entreprise not found with id: " + id));
     }
 
     @Override
@@ -46,24 +49,23 @@ public class EntrepriseServiceImpl implements EntrepriseService {
     }
 
     @Override
-    public Entreprise updateEntreprise(Entreprise entrepriseRequest) {
-        LOGGER.info("request to update entreprise {},{}", entrepriseRequest,entrepriseRequest.getId());
-        return entrepriseRepository.findById(entrepriseRequest.getId()).map(entreprise -> {
-            entreprise.setAddress(entrepriseRequest.getAddress());
-            entreprise.setSiren(entrepriseRequest.getSiren());
-            entreprise.setSiret(entrepriseRequest.getSiret());
-            entreprise.setSocialReason(entrepriseRequest.getSocialReason());
-            entreprise.setCreatedAt(new Date());
-            entrepriseValidator.beforeUpdate(entrepriseRequest);
-            return entrepriseRepository.save(entreprise);
-        }).orElseThrow(() -> new ResourceNotFoundException("entrepriseId " + entrepriseRequest.getId() + " not found"));    }
+    public Entreprise updateEntreprise(Long id, Entreprise entrepriseRequest) {
+        LOGGER.info("request to update entreprise {},{}", entrepriseRequest, entrepriseRequest.getId());
+        Entreprise entreprise = entrepriseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("entrepriseId " + entrepriseRequest.getId() + " not found"));
+        entreprise.setAddress(entrepriseRequest.getAddress());
+        entreprise.setSiren(entrepriseRequest.getSiren());
+        entreprise.setSiret(entrepriseRequest.getSiret());
+        entreprise.setSocialReason(entrepriseRequest.getSocialReason());
+        entreprise.setCreatedAt(new Date());
+        entrepriseValidator.beforeUpdate(entrepriseRequest);
+        return entrepriseRepository.save(entreprise);
+    }
 
     @Override
     public Entreprise deleteEntreprise(Long id) {
-        LOGGER.info("request to delete entreprise {} " , id);
-        return entrepriseRepository.findById(id).map(entreprise -> {
-            entrepriseRepository.delete(entreprise);
-            return entreprise;
-        }).orElseThrow(() -> new ResourceNotFoundException("entrepriseId " + id + " not found"));
+        LOGGER.info("request to delete entreprise {} ", id);
+        Entreprise entreprise = entrepriseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("entrepriseId " + id + " not found"));
+        entrepriseRepository.delete(entreprise);
+        return entreprise;
     }
 }

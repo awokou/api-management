@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class EntrepriseValidatorImpl implements EntrepriseValidator {
 
+    /**
+     *
+     * @param updateRequest
+     */
     @Override
     public void beforeUpdate(Entreprise updateRequest) {
         if (updateRequest.getSiren().isEmpty()) {
@@ -24,6 +28,10 @@ public class EntrepriseValidatorImpl implements EntrepriseValidator {
         }
     }
 
+    /**
+     *
+     * @param createRequest
+     */
     @Override
     public void beforeSave(Entreprise createRequest) {
         if (createRequest.getSiren().isEmpty()) {

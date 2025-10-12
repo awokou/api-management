@@ -18,7 +18,10 @@ public class EmployeValidatorImpl implements EmployeValidator {
         this.employeRepository = employeRepository;
     }
 
-
+    /**
+     *
+     * @param updateRequest
+     */
     @Override
     public void beforeUpdate(Employe updateRequest) {
         Employe oldEmploye = employeRepository.getOne(updateRequest.getId());
@@ -52,10 +55,12 @@ public class EmployeValidatorImpl implements EmployeValidator {
         if (updateRequest.getSalary().compareTo(BigDecimal.ZERO) < 0) {
             throw new ValidationException("Le salaire doit être supérieur à zéro");
         }
-
-
     }
 
+    /**
+     *
+     * @param createRequest
+     */
     @Override
     public void beforeSave(Employe createRequest) {
         if (createRequest.getFirstName().isEmpty()) {

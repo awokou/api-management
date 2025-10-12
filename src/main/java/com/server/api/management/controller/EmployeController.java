@@ -4,8 +4,11 @@ import com.server.api.management.entity.Employe;
 import com.server.api.management.service.EmployeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 @RestController
@@ -33,9 +36,9 @@ public class EmployeController {
         return employeService.getAllEmployes(pageable);
     }
 
-    @PostMapping("/employe/create/{entrepriseId}")
-    public Employe createEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employe) {
-        return employeService.createEmploye(entrepriseId, employe);
+    @PostMapping(value = "/employe/create/{entrepriseId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Employe createEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employe, @RequestParam("file") MultipartFile file) throws IOException {
+        return employeService.createEmploye(entrepriseId, employe, file);
     }
 
     @PutMapping("/employe/update/{entrepriseId}")

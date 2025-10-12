@@ -31,9 +31,9 @@ public class EntrepriseController {
         return entrepriseService.createEntreprise(entreprise);
     }
 
-    @PutMapping("/entreprise/update")
-    public Entreprise updateEntreprise(@RequestBody Entreprise entrepriseRequest) {
-        return entrepriseService.updateEntreprise(entrepriseRequest);
+    @PutMapping("/entreprise/update/{id}")
+    public Entreprise updateEntreprise(@PathVariable Long id,@RequestBody Entreprise entrepriseRequest) {
+        return entrepriseService.updateEntreprise(id,entrepriseRequest);
     }
 
     @DeleteMapping("/entreprise/delete/{entrepriseId}")
