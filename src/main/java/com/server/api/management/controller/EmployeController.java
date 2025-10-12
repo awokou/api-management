@@ -2,14 +2,13 @@ package com.server.api.management.controller;
 
 import com.server.api.management.entity.Employe;
 import com.server.api.management.service.EmployeService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -27,13 +26,13 @@ public class EmployeController {
     }
 
     @GetMapping("/employe/{entrepriseId}")
-    public Page<Employe> getEmployesByEntrepriseId(@PathVariable Long entrepriseId, Pageable pageable) {
-        return employeService.getEmployesByEntrepriseId(entrepriseId, pageable);
+    public List<Employe> getEmployesByEntrepriseId(@PathVariable Long entrepriseId) {
+        return employeService.getEmployesByEntrepriseId(entrepriseId);
     }
 
     @GetMapping("/employe/all")
-    public Page<Employe> getAllEmployes(Pageable pageable) {
-        return employeService.getAllEmployes(pageable);
+    public List<Employe> getAllEmployes() {
+        return employeService.getAllEmployes();
     }
 
     @PostMapping(value = "/employe/create/{entrepriseId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -57,7 +56,7 @@ public class EmployeController {
     }
 
     @GetMapping("/employe/filter/{search}")
-    public Page<Employe> filterEmploye(@PathVariable String search, Pageable pageable) {
-        return employeService.filterEmployes(search, pageable);
+    public List<Employe> filterEmploye(@PathVariable String search) {
+        return employeService.filterEmployes(search);
     }
 }

@@ -1,8 +1,8 @@
 package com.server.api.management.service;
 
 import com.server.api.management.entity.Entreprise;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface EntrepriseService {
     /**
@@ -12,12 +12,7 @@ public interface EntrepriseService {
      */
     Entreprise getEntrepriseById(Long id);
 
-    /**
-     *
-     * @param pageable
-     * @return
-     */
-    Page<Entreprise> getAllEntreprises(Pageable pageable);
+    List<Entreprise> getAllEntreprises();
 
     /**
      *

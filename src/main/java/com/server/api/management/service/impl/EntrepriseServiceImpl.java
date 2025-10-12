@@ -9,10 +9,9 @@ import com.server.api.management.repository.EntrepriseRepository;
 import com.server.api.management.service.EntrepriseService;
 import com.server.api.management.validator.EntrepriseValidator;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
@@ -36,9 +35,9 @@ public class EntrepriseServiceImpl implements EntrepriseService {
     }
 
     @Override
-    public Page<Entreprise> getAllEntreprises(Pageable pageable) {
+    public List<Entreprise> getAllEntreprises() {
         LOGGER.info("request to get all entreprises");
-        return entrepriseRepository.findAll(pageable);
+        return entrepriseRepository.findAll();
     }
 
     @Override

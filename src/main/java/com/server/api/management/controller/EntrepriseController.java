@@ -2,9 +2,9 @@ package com.server.api.management.controller;
 
 import com.server.api.management.entity.Entreprise;
 import com.server.api.management.service.EntrepriseService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -22,8 +22,8 @@ public class EntrepriseController {
     }
 
     @GetMapping("/entreprise/all")
-    public Page<Entreprise> getAllEntreprises(Pageable pageable) {
-        return entrepriseService.getAllEntreprises(pageable);
+    public List<Entreprise> getAllEntreprises() {
+        return entrepriseService.getAllEntreprises();
     }
 
     @PostMapping("/entreprise/create")

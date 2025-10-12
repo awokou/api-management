@@ -12,13 +12,12 @@ import com.server.api.management.entity.Employe;
 import com.server.api.management.exception.ResourceNotFoundException;
 import com.server.api.management.service.EmployeService;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @Transactional
@@ -47,15 +46,15 @@ public class EmployeServiceImpl implements EmployeService {
     }
 
     @Override
-    public Page<Employe> getEmployesByEntrepriseId(Long entrepriseId, Pageable pageable) {
+    public List<Employe> getEmployesByEntrepriseId(Long entrepriseId) {
         LOGGER.debug("request to find employe by entreprise id {}", entrepriseId);
-        return employeRepository.findAllByEntrepriseId(entrepriseId, pageable);
+        return employeRepository.findAllByEntrepriseId(entrepriseId);
     }
 
     @Override
-    public Page<Employe> getAllEmployes(Pageable pageable) {
+    public List<Employe> getAllEmployes() {
         LOGGER.debug("request to get all employees");
-        return employeRepository.findAll(pageable);
+        return employeRepository.findAll();
     }
 
     @Override
@@ -119,7 +118,7 @@ public class EmployeServiceImpl implements EmployeService {
     }
 
     @Override
-    public Page<Employe> filterEmployes(String search, Pageable pageable) {
-        return employeRepository.filterEmployes(search, pageable);
+    public List<Employe> filterEmployes(String search) {
+        return employeRepository.filterEmployes(search);
     }
 }
