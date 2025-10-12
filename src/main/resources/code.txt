@@ -1,0 +1,183 @@
+package com.casa.gvint.batch;
+
+import com.casa.gvint.bean.CAPaiementCsvBean;
+import com.casa.gvint.bean.CreComptableBean;
+import com.casa.gvint.bean.ErreurCsvBean;
+import com.casa.gvint.enumeration.CREVariables;
+import com.casa.gvint.enumeration.StatutTraitement;
+import com.casa.gvint.exception.GVTvaBatchException;
+import com.casa.gvint.models.CreComptable;
+import com.casa.gvint.service.IS3Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.stereotype.Component;
+
+import java.io.*;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+@Component
+public class CreTasklet implements StepExecutionListener, org.springframework.batch.core.step.tasklet.Tasklet {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreTasklet.class);
+
+    @Value("${input.file}")
+    private String inputDirectory;
+
+    @Value("${output.file}")
+    private String outputDirectory;
+
+    @Value("${s3.bucketName}")
+    private String bucketName;
+
+    @Autowired
+    private IS3Service is3Service;
+
+    private static final String TG_ENTITE_EXCLUDED = "00018";
+    private static final String CSV_DELIMITER = ";";
+    private static final String DATE_FORMATTER = "yyyyMMddHHmmss";
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+    private static final String GVCRE = "GV.CRE";
+
+    private String statutTraitement = "";
+    private String nomFichiersTraite;
+    private Integer nbrLignesEntreTotal = 0;
+    private Integer nbrLignesSortieTotal = 0;
+    private String ligneCompletControle;
+    private String valeurControle;
+    private String libelleControle;
+    private Integer numLigneAnomalie = 0;
+    private LocalDateTime dateDebutTraitement;
+    private LocalDateTime dateFinTraitement;
+
+    @Override
+    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+        dateDebutTraitement = LocalDateTime.now();
+        LOGGER.info("Début du traitement : {}", dateDebutTraitement);
+
+        try {
+            // 1. Télécharger le dernier fichier CSV depuis S3
+            File inputFile = getLatestCsvFileFromS3(bucketName, inputDirectory);
+            nomFichiersTraite = inputFile.getName();
+            LOGGER.info("Fichier S3 récupéré : {}", nomFichiersTraite);
+
+            // 2. Lire le fichier CSV
+            List<CAPaiementCsvBean> caPaiementCsvBeanList = readCsvFile(inputFile);
+            applyBlockingControl(caPaiementCsvBeanList);
+
+            // 3. Calcul du sens et du montant net
+            BigDecimal netAmount = calculateNetAmount(caPaiementCsvBeanList);
+            boolean isCredit = netAmount.compareTo(BigDecimal.ZERO) >= 0;
+            LOGGER.info("Direction détectée : {}", isCredit ? "Crédit" : "Débit");
+
+            if (isCredit) {
+                netAmount = calculateNetAmount(caPaiementCsvBeanList.stream()
+                        .filter(l -> TG_ENTITE_EXCLUDED.equals(l.getCodeEntiteTgentite()))
+                        .toList());
+                LOGGER.info("Montant net recalculé (Crédit, exclusion TG_ENTITE_EXCLUDED): {}", netAmount);
+            } else {
+                netAmount = netAmount.abs();
+            }
+
+            // 4. Générer les lignes de sortie
+            List<CreComptableBean> creComptableBeans = new ArrayList<>();
+            creComptableBeans.add(buildSumLine(caPaiementCsvBeanList, netAmount, isCredit));
+            creComptableBeans.addAll(generateCreLines(caPaiementCsvBeanList, isCredit));
+
+            nbrLignesSortieTotal = creComptableBeans.size();
+            LOGGER.info("Nombre total de lignes générées : {}", nbrLignesSortieTotal);
+
+            // 5. Écrire le fichier résultat dans S3
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMATTER));
+            String outputFileName = GVCRE + "." + timestamp + ".txt";
+            String s3OutputPath = outputDirectory + "/" + outputFileName;
+
+            writeCreComptableToS3(bucketName, s3OutputPath, creComptableBeans);
+
+            statutTraitement = StatutTraitement.OK.name();
+            LOGGER.info("Traitement terminé avec succès.");
+
+        } catch (Exception e) {
+            LOGGER.error("Erreur durant le traitement : ", e);
+            statutTraitement = StatutTraitement.KO.name();
+        }
+
+        dateFinTraitement = LocalDateTime.now();
+        LOGGER.info("Fin du traitement : {}", dateFinTraitement);
+        return RepeatStatus.FINISHED;
+    }
+
+    private File getLatestCsvFileFromS3(String bucketName, String directory) throws IOException {
+        List<File> files = is3Service.getListeFiles(bucketName, directory);
+        return files.stream()
+                .filter(f -> f.getName().endsWith(".csv"))
+                .max(Comparator.comparingLong(File::lastModified))
+                .orElseThrow(() -> new FileNotFoundException("Aucun fichier CSV trouvé dans S3 : " + directory));
+    }
+
+    private List<CAPaiementCsvBean> readCsvFile(File inputFile) throws Exception {
+        List<CAPaiementCsvBean> list = new ArrayList<>();
+        FlatFileItemReader<CAPaiementCsvBean> reader = new FlatFileItemReaderBuilder<CAPaiementCsvBean>()
+                .name("caPaiementCsvReader")
+                .resource(new FileSystemResource(inputFile))
+                .delimited()
+                .delimiter(CSV_DELIMITER)
+                .names("typeDocument", "devise", "codeAdresse", "codeSite", "axeAnalytique1Crc", "codeArticle", "designationArticle1", "designationArticle2", "axeAnalytique2Cgb", "codeEntiteTGENTITE", "dateDebutPeriode", "dateFinPeriode", "periodeFacturee", "prixUnitaireHt", "quantite", "numeroFactureSicof", "numeroCommandeFournisseur", "commentaire1", "commentaire2")
+                .targetType(CAPaiementCsvBean.class)
+                .strict(false)
+                .build();
+        reader.open(new ExecutionContext());
+
+        CAPaiementCsvBean item;
+        while ((item = reader.read()) != null) {
+            list.add(item);
+        }
+        reader.close();
+        nbrLignesEntreTotal = list.size();
+        LOGGER.info("Nombre de lignes lues : {}", nbrLignesEntreTotal);
+        return list;
+    }
+
+    private void writeCreComptableToS3(String bucketName, String s3Path, List<CreComptableBean> creLines) throws IOException {
+        File tempFile = File.createTempFile("cre_output_", ".txt");
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+            CreComptable aggregator = new CreComptable();
+            for (CreComptableBean line : creLines) {
+                writer.write(aggregator.aggregate(line));
+                writer.newLine();
+            }
+        }
+
+        is3Service.writeFile(bucketName, s3Path, tempFile);
+    }
+
+    private void applyBlockingControl(List<CAPaiementCsvBean> list) throws GVTvaBatchException {
+        List<ErreurCsvBean> errors = validateMovementDirection(list);
+        if (!errors.isEmpty()) {
+            ErreurCsvBean err = errors.get(0);
+            ligneCompletControle = err.getLigneComplete();
+            valeurControle = err.getValeur();
+            libelleControle = err.getLibelle();
+            numLigneAnomalie = err.getLigne();
+            throw new GVTvaBatchException("Fichier non conforme : Direction du mouvement incorrecte.");
+        }
+    }
+
