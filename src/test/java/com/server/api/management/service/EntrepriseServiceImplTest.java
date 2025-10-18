@@ -4,7 +4,6 @@ import com.server.api.management.entity.Entreprise;
 import com.server.api.management.exception.ResourceNotFoundException;
 import com.server.api.management.repository.EntrepriseRepository;
 import com.server.api.management.service.impl.EntrepriseServiceImpl;
-import com.server.api.management.validator.EntrepriseValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,9 +24,6 @@ class EntrepriseServiceImplTest {
     @Mock
     private EntrepriseRepository entrepriseRepository;
 
-    @Mock
-    private EntrepriseValidator entrepriseValidator;
-
     private Entreprise entreprise;
 
     @BeforeEach
@@ -44,9 +40,7 @@ class EntrepriseServiceImplTest {
     @Test
     void testGetEntrepriseById_found() {
         when(entrepriseRepository.findById(1L)).thenReturn(Optional.of(entreprise));
-
         Entreprise result = entrepriseService.getEntrepriseById(1L);
-
         assertNotNull(result);
         assertEquals("SOPRA STERIA", result.getSocialReason());
         verify(entrepriseRepository, times(1)).findById(1L);
@@ -55,7 +49,6 @@ class EntrepriseServiceImplTest {
     @Test
     void testGetEntrepriseById_notFound() {
         when(entrepriseRepository.findById(1L)).thenReturn(Optional.empty());
-
         assertThrows(ResourceNotFoundException.class, () -> entrepriseService.getEntrepriseById(1L));
     }
 
@@ -63,25 +56,19 @@ class EntrepriseServiceImplTest {
     void testGetAllEntreprises() {
         List<Entreprise> entreprises = List.of(entreprise);
         when(entrepriseRepository.findAll()).thenReturn(entreprises);
-
         List<Entreprise> result = entrepriseService.getAllEntreprises();
-
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("SOPRA STERIA", result.get(0).getSocialReason());
+        assertEquals("SOPRA STERIA", result.getFirst().getSocialReason());
         verify(entrepriseRepository, times(1)).findAll();
     }
 
     @Test
     void testCreateEntreprise() {
-        doNothing().when(entrepriseValidator).beforeSave(any(Entreprise.class));
         when(entrepriseRepository.save(any(Entreprise.class))).thenReturn(entreprise);
-
         Entreprise result = entrepriseService.createEntreprise(entreprise);
-
         assertNotNull(result);
         assertEquals("SOPRA STERIA", result.getSocialReason());
-        verify(entrepriseValidator, times(1)).beforeSave(entreprise);
         verify(entrepriseRepository, times(1)).save(entreprise);
     }
 
@@ -95,14 +82,10 @@ class EntrepriseServiceImplTest {
 
         when(entrepriseRepository.findById(1L)).thenReturn(Optional.of(entreprise));
         when(entrepriseRepository.save(any(Entreprise.class))).thenReturn(entreprise);
-        doNothing().when(entrepriseValidator).beforeUpdate(updateRequest);
-
         Entreprise result = entrepriseService.updateEntreprise(1L, updateRequest);
-
         assertNotNull(result);
         assertEquals("124 Street", result.getAddress());
         assertEquals("CIS", result.getSocialReason());
-        verify(entrepriseValidator).beforeUpdate(updateRequest);
         verify(entrepriseRepository).save(entreprise);
     }
 
@@ -111,16 +94,13 @@ class EntrepriseServiceImplTest {
         Entreprise updateRequest = new Entreprise();
         updateRequest.setId(1L);
         when(entrepriseRepository.findById(1L)).thenReturn(Optional.empty());
-
         assertThrows(ResourceNotFoundException.class, () -> entrepriseService.updateEntreprise(1L, updateRequest));
     }
 
     @Test
     void testDeleteEntreprise_found() {
         when(entrepriseRepository.findById(1L)).thenReturn(Optional.of(entreprise));
-
         Entreprise result = entrepriseService.deleteEntreprise(1L);
-
         assertNotNull(result);
         verify(entrepriseRepository).delete(entreprise);
     }
@@ -128,7 +108,6 @@ class EntrepriseServiceImplTest {
     @Test
     void testDeleteEntreprise_notFound() {
         when(entrepriseRepository.findById(1L)).thenReturn(Optional.empty());
-
         assertThrows(ResourceNotFoundException.class, () -> entrepriseService.deleteEntreprise(1L));
     }
 }

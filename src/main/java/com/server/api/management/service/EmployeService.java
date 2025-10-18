@@ -1,7 +1,6 @@
 package com.server.api.management.service;
 
 import com.server.api.management.entity.Employe;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -14,7 +13,7 @@ public interface EmployeService {
 
     List<Employe> getAllEmployes();
 
-    Employe createEmploye(Long entrepriseId, Employe employe, MultipartFile file) throws IOException;
+    Employe createEmploye(Long entrepriseId, Employe employe) throws IOException;
 
     Employe updateEmploye(Long entrepriseId, Employe employe);
 

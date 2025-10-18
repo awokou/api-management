@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.server.api.management.enums.ContractType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,18 +30,27 @@ public class Employe extends AuditModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Le nom est obligatoire")
+    @Size(min = 5, max = 100, message = "Le nom doit être compris entre 5 et 100 caractères")
     private String firstName;
 
+    @NotBlank(message = "Le prénom est obligatoire")
+    @Size(min = 5, max = 100, message = "Le prénom doit être compris entre 5 et 100 caractères")
     private String lastName;
 
+    @NotBlank(message = "Le numéro de sécurité sociale est obligatoire")
     private String socialSecurityNumber;
 
+    @NotBlank(message = "Le date d’embauche est obligatoire")
     private Date hiringDate;
 
+    @NotBlank(message = "Le type de contrat est obligatoire")
     @Enumerated(EnumType.STRING)
     private ContractType contractType;
 
+
     private BigDecimal salary;
+
     private String fileName;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

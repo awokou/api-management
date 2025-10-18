@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.server.api.management.repository.EntrepriseRepository;
 import com.server.api.management.service.EntrepriseService;
-import com.server.api.management.validator.EntrepriseValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -20,13 +19,16 @@ public class EntrepriseServiceImpl implements EntrepriseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EntrepriseServiceImpl.class);
 
     private final EntrepriseRepository entrepriseRepository;
-    private final EntrepriseValidator entrepriseValidator;
 
-    public EntrepriseServiceImpl(EntrepriseRepository entrepriseRepository, EntrepriseValidator entrepriseValidator) {
+    public EntrepriseServiceImpl(EntrepriseRepository entrepriseRepository) {
         this.entrepriseRepository = entrepriseRepository;
-        this.entrepriseValidator = entrepriseValidator;
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @Override
     public Entreprise getEntrepriseById(Long id) {
         LOGGER.info("request to find entreprise by id {}", id);
@@ -43,7 +45,6 @@ public class EntrepriseServiceImpl implements EntrepriseService {
     @Override
     public Entreprise createEntreprise(Entreprise entreprise) {
         LOGGER.info("request to create new entreprise {}", entreprise);
-        entrepriseValidator.beforeSave(entreprise);
         return entrepriseRepository.save(entreprise);
     }
 
@@ -56,7 +57,6 @@ public class EntrepriseServiceImpl implements EntrepriseService {
         entreprise.setSiret(entrepriseRequest.getSiret());
         entreprise.setSocialReason(entrepriseRequest.getSocialReason());
         entreprise.setCreatedAt(new Date());
-        entrepriseValidator.beforeUpdate(entrepriseRequest);
         return entrepriseRepository.save(entreprise);
     }
 

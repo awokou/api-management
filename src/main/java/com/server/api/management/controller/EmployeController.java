@@ -2,9 +2,9 @@ package com.server.api.management.controller;
 
 import com.server.api.management.entity.Employe;
 import com.server.api.management.service.EmployeService;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -21,33 +21,57 @@ public class EmployeController {
     }
 
     @GetMapping("/employe/{employeId}")
-    public Employe getEmployeById(@PathVariable Long employeId) {
-        return employeService.getEmployeById(employeId);
+    public ResponseEntity<Employe> getEmployeById(@PathVariable Long employeId) {
+        try {
+            return new ResponseEntity<>(employeService.getEmployeById(employeId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/employe/{entrepriseId}")
-    public List<Employe> getEmployesByEntrepriseId(@PathVariable Long entrepriseId) {
-        return employeService.getEmployesByEntrepriseId(entrepriseId);
+    public ResponseEntity<List<Employe>> getEmployesByEntrepriseId(@PathVariable Long entrepriseId) {
+        try {
+            return new ResponseEntity<>(employeService.getEmployesByEntrepriseId(entrepriseId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/employe/all")
-    public List<Employe> getAllEmployes() {
-        return employeService.getAllEmployes();
+    public ResponseEntity<List<Employe>> getAllEmployes() {
+        try {
+            return new ResponseEntity<>(employeService.getAllEmployes(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @PostMapping(value = "/employe/create/{entrepriseId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Employe createEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employe, @RequestParam("file") MultipartFile file) throws IOException {
-        return employeService.createEmploye(entrepriseId, employe, file);
+    @PostMapping("/employe/create/{entrepriseId}")
+    public ResponseEntity<Employe> createEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employe) throws IOException {
+        try {
+            return new ResponseEntity<>(employeService.createEmploye(entrepriseId, employe), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/employe/update/{entrepriseId}")
-    public Employe updateEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employeRequest) {
-        return employeService.updateEmploye(entrepriseId, employeRequest);
+    public ResponseEntity<Employe> updateEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employeRequest) {
+        try {
+            return new ResponseEntity<>(employeService.updateEmploye(entrepriseId, employeRequest), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/employe/delete/{entrepriseId}/{employeId}")
-    public Employe deleteEmploye(@PathVariable Long entrepriseId, @PathVariable Long employeId) {
-        return employeService.deleteEmploye(entrepriseId, employeId);
+    public ResponseEntity<Employe> deleteEmploye(@PathVariable Long entrepriseId, @PathVariable Long employeId) {
+        try {
+            return new ResponseEntity<>(employeService.deleteEmploye(entrepriseId, employeId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/employe/salary/{entrepriseId}/{contractType}/{grille}")
@@ -56,7 +80,11 @@ public class EmployeController {
     }
 
     @GetMapping("/employe/filter/{search}")
-    public List<Employe> filterEmploye(@PathVariable String search) {
-        return employeService.filterEmployes(search);
+    public ResponseEntity<List<Employe>> filterEmploye(@PathVariable String search) {
+        try {
+            return new ResponseEntity<>(employeService.filterEmployes(search), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
