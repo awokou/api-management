@@ -23,7 +23,11 @@ public class EmployeController {
     @GetMapping("/employe/{employeId}")
     public ResponseEntity<Employe> getEmployeById(@PathVariable Long employeId) {
         try {
-            return new ResponseEntity<>(employeService.getEmployeById(employeId), HttpStatus.OK);
+            Employe employe = employeService.getEmployeById(employeId);
+            if (employe == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(employe, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -32,7 +36,8 @@ public class EmployeController {
     @GetMapping("/employe/{entrepriseId}")
     public ResponseEntity<List<Employe>> getEmployesByEntrepriseId(@PathVariable Long entrepriseId) {
         try {
-            return new ResponseEntity<>(employeService.getEmployesByEntrepriseId(entrepriseId), HttpStatus.OK);
+            List<Employe> employeList = employeService.getEmployesByEntrepriseId(entrepriseId);
+            return new ResponseEntity<>(employeList, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -41,7 +46,8 @@ public class EmployeController {
     @GetMapping("/employe/all")
     public ResponseEntity<List<Employe>> getAllEmployes() {
         try {
-            return new ResponseEntity<>(employeService.getAllEmployes(), HttpStatus.OK);
+            List<Employe> employeList = employeService.getAllEmployes();
+            return new ResponseEntity<>(employeList, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -50,7 +56,8 @@ public class EmployeController {
     @PostMapping("/employe/create/{entrepriseId}")
     public ResponseEntity<Employe> createEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employe) throws IOException {
         try {
-            return new ResponseEntity<>(employeService.createEmploye(entrepriseId, employe), HttpStatus.OK);
+            Employe employeCreate = employeService.createEmploye(entrepriseId, employe);
+            return new ResponseEntity<>(employeCreate, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -59,7 +66,8 @@ public class EmployeController {
     @PutMapping("/employe/update/{entrepriseId}")
     public ResponseEntity<Employe> updateEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employeRequest) {
         try {
-            return new ResponseEntity<>(employeService.updateEmploye(entrepriseId, employeRequest), HttpStatus.OK);
+            Employe employeUpdate = employeService.updateEmploye(entrepriseId, employeRequest);
+            return new ResponseEntity<>(employeUpdate, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -68,7 +76,8 @@ public class EmployeController {
     @DeleteMapping("/employe/delete/{entrepriseId}/{employeId}")
     public ResponseEntity<Employe> deleteEmploye(@PathVariable Long entrepriseId, @PathVariable Long employeId) {
         try {
-            return new ResponseEntity<>(employeService.deleteEmploye(entrepriseId, employeId), HttpStatus.OK);
+            Employe deleted = employeService.deleteEmploye(entrepriseId, employeId);
+            return new ResponseEntity<>(deleted, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -82,7 +91,8 @@ public class EmployeController {
     @GetMapping("/employe/filter/{search}")
     public ResponseEntity<List<Employe>> filterEmploye(@PathVariable String search) {
         try {
-            return new ResponseEntity<>(employeService.filterEmployes(search), HttpStatus.OK);
+            List<Employe> employeFiltered = employeService.filterEmployes(search);
+            return new ResponseEntity<>(employeFiltered, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

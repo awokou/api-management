@@ -24,33 +24,28 @@ public class EntrepriseServiceImpl implements EntrepriseService {
         this.entrepriseRepository = entrepriseRepository;
     }
 
-    /**
-     *
-     * @param id
-     * @return
-     */
     @Override
     public Entreprise getEntrepriseById(Long id) {
-        LOGGER.info("request to find entreprise by id {}", id);
+        LOGGER.info("Find entreprise by id {}", id);
         return entrepriseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entreprise not found with id: " + id));
     }
 
     @Override
     public List<Entreprise> getAllEntreprises() {
-        LOGGER.info("request to get all entreprises");
+        LOGGER.info("Get all entreprises");
         return entrepriseRepository.findAll();
     }
 
     @Override
     public Entreprise createEntreprise(Entreprise entreprise) {
-        LOGGER.info("request to create new entreprise {}", entreprise);
+        LOGGER.info("Create new entreprise {}", entreprise);
         return entrepriseRepository.save(entreprise);
     }
 
     @Override
     public Entreprise updateEntreprise(Long id, Entreprise entrepriseRequest) {
-        LOGGER.info("request to update entreprise {},{}", entrepriseRequest, entrepriseRequest.getId());
+        LOGGER.info("Update entreprise {},{}", entrepriseRequest, entrepriseRequest.getId());
         Entreprise entreprise = entrepriseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("entrepriseId " + entrepriseRequest.getId() + " not found"));
         entreprise.setAddress(entrepriseRequest.getAddress());
         entreprise.setSiren(entrepriseRequest.getSiren());
@@ -62,7 +57,7 @@ public class EntrepriseServiceImpl implements EntrepriseService {
 
     @Override
     public Entreprise deleteEntreprise(Long id) {
-        LOGGER.info("request to delete entreprise {} ", id);
+        LOGGER.info("Delete entreprise {} ", id);
         Entreprise entreprise = entrepriseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("entrepriseId " + id + " not found"));
         entrepriseRepository.delete(entreprise);
         return entreprise;

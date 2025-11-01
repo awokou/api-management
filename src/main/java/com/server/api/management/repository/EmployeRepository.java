@@ -9,9 +9,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository for Employee
+ */
 public interface EmployeRepository extends JpaRepository<Employe, Long> {
 
     Optional<Employe> findByIdAndEntrepriseId(Long entrepriseId, Long employeId);
+
     List<Employe> findAllByEntrepriseId(Long entrepriseId);
 
     @Query(value = "SELECT min(emp.salary) FROM employe emp where emp.contract_type = :contractType and emp.entreprise_id = :entrepriseId", nativeQuery = true)

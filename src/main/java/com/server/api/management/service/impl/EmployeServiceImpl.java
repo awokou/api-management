@@ -13,7 +13,6 @@ import com.server.api.management.exception.ResourceNotFoundException;
 import com.server.api.management.service.EmployeService;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -34,27 +33,27 @@ public class EmployeServiceImpl implements EmployeService {
 
     @Override
     public Employe getEmployeById(Long id) {
-        LOGGER.info("request to find employe by id {}", id);
+        LOGGER.info("Find employe by id {}", id);
         return employeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employe not found with id: " + id));
     }
 
     @Override
     public List<Employe> getEmployesByEntrepriseId(Long entrepriseId) {
-        LOGGER.info("request to find employe by entreprise id {}", entrepriseId);
+        LOGGER.info("Find employe by entreprise id {}", entrepriseId);
         return employeRepository.findAllByEntrepriseId(entrepriseId);
     }
 
     @Override
     public List<Employe> getAllEmployes() {
-        LOGGER.info("request to get all employees");
+        LOGGER.info("Get all employees");
         return employeRepository.findAll();
     }
 
     @Override
-    public Employe createEmploye(Long entrepriseId, Employe employe) throws IOException {
+    public Employe createEmploye(Long entrepriseId, Employe employe) {
 
-        LOGGER.info("request to create new employe By Entreprise id {} , {}", employe, entrepriseId);
+        LOGGER.info("Create new employe By Entreprise id {} , {}", employe, entrepriseId);
 
         if (employe.getSalary().compareTo(BigDecimal.ZERO) < 0) {
             throw new ValidationException("Le salaire doit être supérieur à zéro");
@@ -70,7 +69,7 @@ public class EmployeServiceImpl implements EmployeService {
     @Override
     public Employe updateEmploye(Long entrepriseId, Employe employeRequest) {
 
-        LOGGER.info("request to update employe By Entreprise id {} , {}", employeRequest, entrepriseId);
+        LOGGER.info("Update employe By Entreprise id {} , {}", employeRequest, entrepriseId);
 
         Employe employe = employeRepository.findById(employeRequest.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("employeId " + employeRequest.getId() + "not found"));
@@ -108,7 +107,7 @@ public class EmployeServiceImpl implements EmployeService {
 
     @Override
     public Employe deleteEmploye(Long entrepriseId, Long employeId) {
-        LOGGER.info("request to delete employe By Entreprise id {} , {}", employeId, entrepriseId);
+        LOGGER.info("Delete employe By Entreprise id {} , {}", employeId, entrepriseId);
         Employe employe = employeRepository.findByIdAndEntrepriseId(entrepriseId, employeId).orElseThrow(() -> new ResourceNotFoundException("Employe not found with id " + employeId + " and EntrepriseId " + entrepriseId));
         employeRepository.delete(employe);
 

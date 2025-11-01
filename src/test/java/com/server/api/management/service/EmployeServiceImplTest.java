@@ -25,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
 @ExtendWith(MockitoExtension.class)
 class EmployeServiceImplTest {
 
@@ -112,21 +113,21 @@ class EmployeServiceImplTest {
 
     @Test
     void testUpdateEmployeInvalidContractType() {
-        Employe old = new Employe();
-        old.setId(1L);
-        old.setContractType(ContractType.CDI);
-        old.setSalary(BigDecimal.valueOf(3000));
+        Employe employeOld = new Employe();
+        employeOld.setId(1L);
+        employeOld.setContractType(ContractType.CDI);
+        employeOld.setSalary(BigDecimal.valueOf(3000));
 
-        Employe update = new Employe();
-        update.setId(1L);
-        update.setContractType(ContractType.ALTERNANCE);
-        update.setSalary(BigDecimal.valueOf(3000));
-        update.setEntreprise(entreprise);
+        Employe employeUpdate = new Employe();
+        employeUpdate.setId(1L);
+        employeUpdate.setContractType(ContractType.ALTERNANCE);
+        employeUpdate.setSalary(BigDecimal.valueOf(3000));
+        employeUpdate.setEntreprise(entreprise);
 
-        when(employeRepository.findById(1L)).thenReturn(Optional.of(old));
+        when(employeRepository.findById(1L)).thenReturn(Optional.of(employeOld));
         when(entrepriseRepository.existsById(1L)).thenReturn(true);
 
-        assertThrows(ValidationException.class, () -> employeService.updateEmploye(1L, update));
+        assertThrows(ValidationException.class, () -> employeService.updateEmploye(1L, employeUpdate));
     }
 
     @Test

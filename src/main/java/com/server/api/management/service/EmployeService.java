@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface EmployeService {
+
     Employe getEmployeById(Long id);
 
     List<Employe> getEmployesByEntrepriseId(Long entrepriseId);

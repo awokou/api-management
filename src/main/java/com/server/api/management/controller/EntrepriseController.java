@@ -21,16 +21,21 @@ public class EntrepriseController {
     @GetMapping("/entreprise/{entrepriseId}")
     public ResponseEntity<Entreprise> getEntrepriseById(@PathVariable Long entrepriseId) {
         try {
-            return new ResponseEntity<>(entrepriseService.getEntrepriseById(entrepriseId), HttpStatus.OK);
+            Entreprise entreprise = entrepriseService.getEntrepriseById(entrepriseId);
+            if (entreprise == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 si introuvable
+            }
+            return new ResponseEntity<>(entreprise, HttpStatus.OK); // 200 si trouvé
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);  // 500 si exception
         }
     }
 
     @GetMapping("/entreprise/all")
     public ResponseEntity<List<Entreprise>> getAllEntreprises() {
         try {
-            return new ResponseEntity<>(entrepriseService.getAllEntreprises(), HttpStatus.OK);
+            List<Entreprise> entrepriseList = entrepriseService.getAllEntreprises();
+            return new ResponseEntity<>(entrepriseList, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -39,7 +44,8 @@ public class EntrepriseController {
     @PostMapping("/entreprise/create")
     public ResponseEntity<Entreprise> createPost(@RequestBody Entreprise entreprise) {
         try {
-            return new ResponseEntity<>(entrepriseService.createEntreprise(entreprise), HttpStatus.OK);
+            Entreprise entrepriseCreate = entrepriseService.createEntreprise(entreprise);
+            return new ResponseEntity<>(entrepriseCreate, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -48,7 +54,8 @@ public class EntrepriseController {
     @PutMapping("/entreprise/update/{id}")
     public ResponseEntity<Entreprise> updateEntreprise(@PathVariable Long id, @RequestBody Entreprise entrepriseRequest) {
         try {
-            return new ResponseEntity<>(entrepriseService.updateEntreprise(id, entrepriseRequest), HttpStatus.OK);
+            Entreprise entreprise = entrepriseService.updateEntreprise(id, entrepriseRequest);
+            return new ResponseEntity<>(entreprise, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -57,9 +64,10 @@ public class EntrepriseController {
     @DeleteMapping("/entreprise/delete/{entrepriseId}")
     public ResponseEntity<Entreprise> deleteEntreprise(@PathVariable Long entrepriseId) {
         try {
-            return new ResponseEntity<>(entrepriseService.deleteEntreprise(entrepriseId), HttpStatus.OK);
+            Entreprise deleted = entrepriseService.deleteEntreprise(entrepriseId);
+            return new ResponseEntity<>(deleted, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);// returns 500 if exception occurs
         }
     }
 }

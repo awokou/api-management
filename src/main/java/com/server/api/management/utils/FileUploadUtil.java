@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.SecureRandom;
 
 @Component
 public class FileUploadUtil {
@@ -21,21 +22,31 @@ public class FileUploadUtil {
     }
 
     /**
-     * Saves a file to the upload directory with a unique code prefixed to the filename.
+     * Sauvegarde un fichier dans le répertoire d'uploads avec un code unique préfixé.
      *
-     * @param fileName      The original name of the file.
-     * @param multipartFile The MultipartFile to be saved.
-     * @return The unique code generated for the file.
-     * @throws IOException If an I/O error occurs during file saving.
+     * @param fileName      Le nom original du fichier.
+     * @param multipartFile Le fichier Multipart à sauvegarder.
+     * @return Le code unique généré pour le fichier.
+     * @throws IOException Si une erreur I/O survient lors de la sauvegarde.
      */
     public String saveFile(String fileName, MultipartFile multipartFile) throws IOException {
+        // Nettoyage du nom de fichier pour éviter les problèmes de sécurité
+        String cleanFileName = Path.of(fileName).getFileName().toString();
+
+        // Création du chemin d’upload si nécessaire
         Path uploadPath = Paths.get(fileStorageProperties.getUploadDir());
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
-        String fileCode = RandomStringUtils.randomAlphanumeric(8);
+        // Génération d’un code unique alphanumérique sans méthode dépréciée
+        SecureRandom random = new SecureRandom();
+        String fileCode = RandomStringUtils.random(8, 0, 0, true, true, null, random);
+
+        // Construction du chemin final du fichier
+        Path filePath = uploadPath.resolve(fileCode + "-" + cleanFileName);
+
+        // Copie du fichier en remplaçant si déjà existant
         try (InputStream inputStream = multipartFile.getInputStream()) {
-            Path filePath = uploadPath.resolve(fileCode + "-" + fileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ioe) {
             throw new IOException("Could not save file: " + fileName, ioe);
