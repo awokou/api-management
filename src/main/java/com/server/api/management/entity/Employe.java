@@ -15,9 +15,10 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@EqualsAndHashCode(callSuper = true)
+
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "employe")
 public class Employe extends AuditModel {
 
@@ -27,10 +28,12 @@ public class Employe extends AuditModel {
 
     @NotBlank(message = "Le nom est obligatoire")
     @Size(min = 5, max = 100, message = "Le nom doit être compris entre 5 et 100 caractères")
+    @Column(name = "first_name",nullable = false)
     private String firstName;
 
     @NotBlank(message = "Le prénom est obligatoire")
     @Size(min = 5, max = 100, message = "Le prénom doit être compris entre 5 et 100 caractères")
+    @Column(name = "last_name",nullable = false)
     private String lastName;
 
     @NotBlank(message = "Le numéro de sécurité sociale est obligatoire")
