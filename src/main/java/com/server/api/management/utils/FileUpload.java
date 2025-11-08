@@ -13,11 +13,11 @@ import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
 
 @Component
-public class FileUploadUtil {
+public class FileUpload {
 
     private final FileStorageProperties fileStorageProperties;
 
-    public FileUploadUtil(FileStorageProperties fileStorageProperties) {
+    public FileUpload(FileStorageProperties fileStorageProperties) {
         this.fileStorageProperties = fileStorageProperties;
     }
 

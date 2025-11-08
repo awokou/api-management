@@ -18,8 +18,6 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "employe")
 public class Employe extends AuditModel {
 

@@ -8,8 +8,6 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "entreprise")
 public class Entreprise extends AuditModel {
 
