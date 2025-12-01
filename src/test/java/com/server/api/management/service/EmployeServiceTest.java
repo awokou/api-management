@@ -2,7 +2,7 @@ package com.server.api.management.service;
 
 import com.server.api.management.entity.Employe;
 import com.server.api.management.entity.Entreprise;
-import com.server.api.management.enums.ContractType;
+import com.server.api.management.entity.enums.ContractType;
 import com.server.api.management.exception.ResourceNotFoundException;
 import com.server.api.management.exception.ValidationException;
 import com.server.api.management.repository.EmployeRepository;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-class EmployeServiceImplTest {
+class EmployeServiceTest {
 
     @InjectMocks
     private EmployeServiceImpl employeService;
@@ -49,7 +49,7 @@ class EmployeServiceImplTest {
         entreprise.setAddress("123 Street");
         entreprise.setSiren("123456789");
         entreprise.setSiret("12345678900011");
-        entreprise.setSocialReason("SOPRA STERIA");
+        entreprise.setSocialReason("TEST");
         entreprise.setCreatedAt(new Date());
 
         employe = new Employe();

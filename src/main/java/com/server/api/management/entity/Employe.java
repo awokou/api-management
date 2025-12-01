@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.server.api.management.enums.ContractType;
+import com.server.api.management.entity.enums.ContractType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -18,7 +18,6 @@ import java.util.Date;
 
 @Data
 @Entity
-@EqualsAndHashCode(callSuper = true)
 @Table(name = "employe")
 public class Employe extends AuditModel {
 

@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class EntrepriseServiceImplTest {
+class EntrepriseServiceTest {
 
     @InjectMocks
     private EntrepriseServiceImpl entrepriseService;
@@ -33,7 +33,7 @@ class EntrepriseServiceImplTest {
         entreprise.setAddress("123 Street");
         entreprise.setSiren("123456789");
         entreprise.setSiret("12345678900011");
-        entreprise.setSocialReason("SOPRA STERIA");
+        entreprise.setSocialReason("TEST");
         entreprise.setCreatedAt(new Date());
     }
 
@@ -42,7 +42,7 @@ class EntrepriseServiceImplTest {
         when(entrepriseRepository.findById(1L)).thenReturn(Optional.of(entreprise));
         Entreprise result = entrepriseService.getEntrepriseById(1L);
         assertNotNull(result);
-        assertEquals("SOPRA STERIA", result.getSocialReason());
+        assertEquals("TEST", result.getSocialReason());
         verify(entrepriseRepository, times(1)).findById(1L);
     }
 
@@ -59,7 +59,7 @@ class EntrepriseServiceImplTest {
         List<Entreprise> result = entrepriseService.getAllEntreprises();
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("SOPRA STERIA", result.getFirst().getSocialReason());
+        assertEquals("TEST", result.getFirst().getSocialReason());
         verify(entrepriseRepository, times(1)).findAll();
     }
 
@@ -68,7 +68,7 @@ class EntrepriseServiceImplTest {
         when(entrepriseRepository.save(any(Entreprise.class))).thenReturn(entreprise);
         Entreprise result = entrepriseService.createEntreprise(entreprise);
         assertNotNull(result);
-        assertEquals("SOPRA STERIA", result.getSocialReason());
+        assertEquals("TEST", result.getSocialReason());
         verify(entrepriseRepository, times(1)).save(entreprise);
     }
 

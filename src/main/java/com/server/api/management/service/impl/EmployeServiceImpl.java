@@ -1,7 +1,7 @@
 package com.server.api.management.service.impl;
 
 import com.server.api.management.entity.Entreprise;
-import com.server.api.management.enums.ContractType;
+import com.server.api.management.entity.enums.ContractType;
 import com.server.api.management.exception.ValidationException;
 import com.server.api.management.repository.EmployeRepository;
 import com.server.api.management.repository.EntrepriseRepository;
