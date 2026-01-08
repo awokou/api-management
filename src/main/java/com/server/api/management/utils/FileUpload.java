@@ -22,7 +22,8 @@ public class FileUpload {
     }
 
     /**
-     * Sauvegarde un fichier dans le répertoire d'uploads avec un code unique préfixé.
+     * Sauvegarde un fichier dans le répertoire d'uploads avec un code unique
+     * préfixé.
      *
      * @param fileName      Le nom original du fichier.
      * @param multipartFile Le fichier Multipart à sauvegarder.

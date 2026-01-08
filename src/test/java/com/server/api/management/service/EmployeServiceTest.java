@@ -4,7 +4,6 @@ import com.server.api.management.entity.Employe;
 import com.server.api.management.entity.Entreprise;
 import com.server.api.management.entity.enums.ContractType;
 import com.server.api.management.exception.ResourceNotFoundException;
-import com.server.api.management.exception.ValidationException;
 import com.server.api.management.repository.EmployeRepository;
 import com.server.api.management.repository.EntrepriseRepository;
 import com.server.api.management.service.impl.EmployeServiceImpl;
@@ -127,7 +126,7 @@ class EmployeServiceTest {
         when(employeRepository.findById(1L)).thenReturn(Optional.of(employeOld));
         when(entrepriseRepository.existsById(1L)).thenReturn(true);
 
-        assertThrows(ValidationException.class, () -> employeService.updateEmploye(1L, employeUpdate));
+        assertThrows(ResourceNotFoundException.class, () -> employeService.updateEmploye(1L, employeUpdate));
     }
 
     @Test
@@ -161,7 +160,7 @@ class EmployeServiceTest {
     @Test
     void testCreateEmployeInvalidSalary() {
         employe.setSalary(BigDecimal.valueOf(-500));
-        assertThrows(ValidationException.class, () -> employeService.createEmploye(1L, employe));
+        assertThrows(ResourceNotFoundException.class, () -> employeService.createEmploye(1L, employe));
     }
 
     @Test

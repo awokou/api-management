@@ -2,6 +2,9 @@ package com.server.api.management.controller;
 
 import com.server.api.management.entity.Entreprise;
 import com.server.api.management.service.EntrepriseService;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,14 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
+@RequiredArgsConstructor
 public class EntrepriseController {
 
     private final EntrepriseService entrepriseService;
-
-    public EntrepriseController(EntrepriseService entrepriseService) {
-        this.entrepriseService = entrepriseService;
-    }
 
     @GetMapping("/entreprise/{entrepriseId}")
     public ResponseEntity<Entreprise> getEntrepriseById(@PathVariable Long entrepriseId) {
@@ -27,7 +27,7 @@ public class EntrepriseController {
             }
             return new ResponseEntity<>(entreprise, HttpStatus.OK); // 200 si trouvé
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);  // 500 si exception
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500 si exception
         }
     }
 
@@ -52,7 +52,8 @@ public class EntrepriseController {
     }
 
     @PutMapping("/entreprise/update/{id}")
-    public ResponseEntity<Entreprise> updateEntreprise(@PathVariable Long id, @RequestBody Entreprise entrepriseRequest) {
+    public ResponseEntity<Entreprise> updateEntreprise(@PathVariable Long id,
+            @RequestBody Entreprise entrepriseRequest) {
         try {
             Entreprise entreprise = entrepriseService.updateEntreprise(id, entrepriseRequest);
             return new ResponseEntity<>(entreprise, HttpStatus.OK);

@@ -2,6 +2,9 @@ package com.server.api.management.controller;
 
 import com.server.api.management.entity.Employe;
 import com.server.api.management.service.EmployeService;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +14,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
+@RequiredArgsConstructor
 public class EmployeController {
 
     private final EmployeService employeService;
-
-    public EmployeController(EmployeService employeService) {
-        this.employeService = employeService;
-    }
 
     @GetMapping("/employe/{employeId}")
     public ResponseEntity<Employe> getEmployeById(@PathVariable Long employeId) {
@@ -54,7 +54,8 @@ public class EmployeController {
     }
 
     @PostMapping("/employe/create/{entrepriseId}")
-    public ResponseEntity<Employe> createEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employe) throws IOException {
+    public ResponseEntity<Employe> createEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employe)
+            throws IOException {
         try {
             Employe employeCreate = employeService.createEmploye(entrepriseId, employe);
             return new ResponseEntity<>(employeCreate, HttpStatus.OK);
@@ -84,7 +85,8 @@ public class EmployeController {
     }
 
     @GetMapping("/employe/salary/{entrepriseId}/{contractType}/{grille}")
-    public BigDecimal getSalaryByEntrepriseIdAndContractType(@PathVariable Long entrepriseId, @PathVariable String contractType, @PathVariable String grille) {
+    public BigDecimal getSalaryByEntrepriseIdAndContractType(@PathVariable Long entrepriseId,
+            @PathVariable String contractType, @PathVariable String grille) {
         return employeService.getSalaryByEntrepriseIdAndContractType(entrepriseId, contractType, grille);
     }
 

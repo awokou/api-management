@@ -2,22 +2,23 @@ package com.server.api.management.service.impl;
 
 import com.server.api.management.entity.Entreprise;
 import com.server.api.management.entity.enums.ContractType;
-import com.server.api.management.exception.ValidationException;
 import com.server.api.management.repository.EmployeRepository;
 import com.server.api.management.repository.EntrepriseRepository;
-import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.server.api.management.entity.Employe;
 import com.server.api.management.exception.ResourceNotFoundException;
 import com.server.api.management.service.EmployeService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Service
-@Transactional
+@RequiredArgsConstructor
 public class EmployeServiceImpl implements EmployeService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployeServiceImpl.class);
@@ -25,13 +26,8 @@ public class EmployeServiceImpl implements EmployeService {
     private final EmployeRepository employeRepository;
     private final EntrepriseRepository entrepriseRepository;
 
-    public EmployeServiceImpl(EmployeRepository employeRepository, EntrepriseRepository entrepriseRepository) {
-        this.employeRepository = employeRepository;
-        this.entrepriseRepository = entrepriseRepository;
-    }
-
-
     @Override
+    @Transactional(readOnly = true)
     public Employe getEmployeById(Long id) {
         LOGGER.info("Find employe by id {}", id);
         return employeRepository.findById(id)
@@ -39,24 +35,27 @@ public class EmployeServiceImpl implements EmployeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Employe> getEmployesByEntrepriseId(Long entrepriseId) {
         LOGGER.info("Find employe by entreprise id {}", entrepriseId);
         return employeRepository.findAllByEntrepriseId(entrepriseId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Employe> getAllEmployes() {
         LOGGER.info("Get all employees");
         return employeRepository.findAll();
     }
 
     @Override
+    @Transactional
     public Employe createEmploye(Long entrepriseId, Employe employe) {
 
         LOGGER.info("Create new employe By Entreprise id {} , {}", employe, entrepriseId);
 
         if (employe.getSalary().compareTo(BigDecimal.ZERO) < 0) {
-            throw new ValidationException("Le salaire doit être supérieur à zéro");
+            throw new ResourceNotFoundException("Le salaire doit être supérieur à zéro");
         }
 
         Entreprise entreprise = entrepriseRepository.findById(entrepriseId)
@@ -67,6 +66,7 @@ public class EmployeServiceImpl implements EmployeService {
     }
 
     @Override
+    @Transactional
     public Employe updateEmploye(Long entrepriseId, Employe employeRequest) {
 
         LOGGER.info("Update employe By Entreprise id {} , {}", employeRequest, entrepriseId);
@@ -85,12 +85,12 @@ public class EmployeServiceImpl implements EmployeService {
         if ((oldEmploye.getContractType().equals(ContractType.CDD) ||
                 oldEmploye.getContractType().equals(ContractType.CDI) &&
                         employeRequest.getContractType().equals(ContractType.ALTERNANCE))) {
-            throw new ValidationException("un employé ne peut pas changer de contrat CDI ou CDD vers alternance");
+            throw new ResourceNotFoundException("un employé ne peut pas changer de contrat CDI ou CDD vers alternance");
         }
 
         // Validation du salaire
         if (employeRequest.getSalary().compareTo(BigDecimal.ZERO) < 0) {
-            throw new ValidationException("Le salaire doit être supérieur à zéro");
+            throw new ResourceNotFoundException("Le salaire doit être supérieur à zéro");
         }
 
         // Mise à jour des champs
@@ -106,9 +106,12 @@ public class EmployeServiceImpl implements EmployeService {
     }
 
     @Override
+    @Transactional
     public Employe deleteEmploye(Long entrepriseId, Long employeId) {
         LOGGER.info("Delete employe By Entreprise id {} , {}", employeId, entrepriseId);
-        Employe employe = employeRepository.findByIdAndEntrepriseId(entrepriseId, employeId).orElseThrow(() -> new ResourceNotFoundException("Employe not found with id " + employeId + " and EntrepriseId " + entrepriseId));
+        Employe employe = employeRepository.findByIdAndEntrepriseId(entrepriseId, employeId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Employe not found with id " + employeId + " and EntrepriseId " + entrepriseId));
         employeRepository.delete(employe);
 
         return employe;

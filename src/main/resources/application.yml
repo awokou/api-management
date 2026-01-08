@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/entreprisedb
     username: postgres
-    password: ${DB_PASSWORD}
+    password: postgres
 
   jpa:
     show-sql: true
@@ -15,5 +15,9 @@ spring:
     hibernate:
       ddl-auto: none
 
+jwt:
+  jwtSecret: 2b44b0b00fd822d8ce753e54dac3dc4e06c2725f7db930f3b9924468b53194dbccdbe23d7baa5ef5fbc414ca4b2e64700bad60c5a7c45eaba56880985582fba4
+  jwtExpirationMs: 86400000
+
 file:
-  upload-dir: src/main/resources/uploads
+  upload-dir:
