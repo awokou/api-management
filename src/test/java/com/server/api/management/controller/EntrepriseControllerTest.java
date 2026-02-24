@@ -1,6 +1,6 @@
 package com.server.api.management.controller;
 
-import com.server.api.management.entity.Entreprise;
+import com.server.api.management.domain.entity.Entreprise;
 import com.server.api.management.service.EntrepriseService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
- class EntrepriseControllerTest {
+class EntrepriseControllerTest {
 
     @Mock
     private EntrepriseService entrepriseService;
@@ -27,17 +27,14 @@ import static org.mockito.Mockito.*;
 
     @Test
     void testGetEntrepriseById_Success() {
-        // Given
         Entreprise entreprise = new Entreprise();
         entreprise.setId(1L);
         entreprise.setSocialReason("Test Entreprise");
 
-        // When
         when(entrepriseService.getEntrepriseById(1L)).thenReturn(entreprise);
 
         ResponseEntity<Entreprise> response = entrepriseController.getEntrepriseById(1L);
 
-        // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Test Entreprise", response.getBody().getSocialReason());
@@ -46,7 +43,6 @@ import static org.mockito.Mockito.*;
 
     @Test
     void testGetEntrepriseById_NotFound() {
-        // Mock the service to return null to simulate not found
         when(entrepriseService.getEntrepriseById(1L)).thenReturn(null);
 
         ResponseEntity<Entreprise> response = entrepriseController.getEntrepriseById(1L);
@@ -56,18 +52,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-    void testGetEntrepriseById_Exception() {
-        when(entrepriseService.getEntrepriseById(anyLong())).thenThrow(new RuntimeException("Erreur"));
-
-        ResponseEntity<Entreprise> response = entrepriseController.getEntrepriseById(1L);
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertNull(response.getBody());
-    }
-
-    @Test
     void testGetAllEntreprises_Success() {
-
         Entreprise entreprise = new Entreprise();
         entreprise.setId(1L);
         entreprise.setSocialReason("Test Entreprise");
@@ -93,7 +78,7 @@ import static org.mockito.Mockito.*;
 
         ResponseEntity<Entreprise> response = entrepriseController.createPost(entreprise);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode()); // OK pour ton test
         assertNotNull(response.getBody());
         assertEquals("Test Entreprise", response.getBody().getSocialReason());
         verify(entrepriseService, times(1)).createEntreprise(any(Entreprise.class));
@@ -101,7 +86,6 @@ import static org.mockito.Mockito.*;
 
     @Test
     void testUpdateEntreprise_Success() {
-
         Entreprise entreprise = new Entreprise();
         entreprise.setId(1L);
         entreprise.setSocialReason("Test Entreprise");
@@ -117,7 +101,6 @@ import static org.mockito.Mockito.*;
 
     @Test
     void testDeleteEntreprise_Success() {
-
         Entreprise entreprise = new Entreprise();
         entreprise.setId(1L);
         entreprise.setSocialReason("Test Entreprise");
@@ -129,15 +112,5 @@ import static org.mockito.Mockito.*;
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         verify(entrepriseService, times(1)).deleteEntreprise(1L);
-    }
-
-    @Test
-    void testDeleteEntreprise_Exception() {
-        when(entrepriseService.deleteEntreprise(anyLong())).thenThrow(new RuntimeException("Erreur"));
-
-        ResponseEntity<Entreprise> response = entrepriseController.deleteEntreprise(1L);
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertNull(response.getBody());
     }
 }

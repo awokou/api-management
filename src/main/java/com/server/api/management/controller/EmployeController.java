@@ -1,6 +1,6 @@
 package com.server.api.management.controller;
 
-import com.server.api.management.entity.Employe;
+import com.server.api.management.domain.entity.Employe;
 import com.server.api.management.service.EmployeService;
 
 import lombok.RequiredArgsConstructor;
@@ -8,95 +8,61 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/employes")
 @RequiredArgsConstructor
 public class EmployeController {
 
     private final EmployeService employeService;
 
-    @GetMapping("/employe/{employeId}")
-    public ResponseEntity<Employe> getEmployeById(@PathVariable Long employeId) {
-        try {
-            Employe employe = employeService.getEmployeById(employeId);
-            if (employe == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            return new ResponseEntity<>(employe, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<Employe> getEmployeById(@PathVariable Long id) {
+        Employe employe = employeService.getEmployeById(id);
+        return new ResponseEntity<>(employe, HttpStatus.OK);
     }
 
-    @GetMapping("/employe/{entrepriseId}")
+    @GetMapping("/{entrepriseId}")
     public ResponseEntity<List<Employe>> getEmployesByEntrepriseId(@PathVariable Long entrepriseId) {
-        try {
-            List<Employe> employeList = employeService.getEmployesByEntrepriseId(entrepriseId);
-            return new ResponseEntity<>(employeList, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<Employe> employeList = employeService.getEmployesByEntrepriseId(entrepriseId);
+        return new ResponseEntity<>(employeList, HttpStatus.OK);
     }
 
-    @GetMapping("/employe/all")
+    @GetMapping
     public ResponseEntity<List<Employe>> getAllEmployes() {
-        try {
-            List<Employe> employeList = employeService.getAllEmployes();
-            return new ResponseEntity<>(employeList, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<Employe> employeList = employeService.getAllEmployes();
+        return new ResponseEntity<>(employeList, HttpStatus.OK);
     }
 
-    @PostMapping("/employe/create/{entrepriseId}")
-    public ResponseEntity<Employe> createEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employe)
-            throws IOException {
-        try {
-            Employe employeCreate = employeService.createEmploye(entrepriseId, employe);
-            return new ResponseEntity<>(employeCreate, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @PostMapping("/{entrepriseId}")
+    public ResponseEntity<Employe> createEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employe) {
+        Employe employeCreate = employeService.createEmploye(entrepriseId, employe);
+        return new ResponseEntity<>(employeCreate, HttpStatus.CREATED);
     }
 
-    @PutMapping("/employe/update/{entrepriseId}")
+    @PutMapping("/{entrepriseId}")
     public ResponseEntity<Employe> updateEmploye(@PathVariable Long entrepriseId, @RequestBody Employe employeRequest) {
-        try {
-            Employe employeUpdate = employeService.updateEmploye(entrepriseId, employeRequest);
-            return new ResponseEntity<>(employeUpdate, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Employe employeUpdate = employeService.updateEmploye(entrepriseId, employeRequest);
+        return new ResponseEntity<>(employeUpdate, HttpStatus.OK);
     }
 
-    @DeleteMapping("/employe/delete/{entrepriseId}/{employeId}")
+    @DeleteMapping("/{entrepriseId}/{employeId}")
     public ResponseEntity<Employe> deleteEmploye(@PathVariable Long entrepriseId, @PathVariable Long employeId) {
-        try {
-            Employe deleted = employeService.deleteEmploye(entrepriseId, employeId);
-            return new ResponseEntity<>(deleted, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Employe deleted = employeService.deleteEmploye(entrepriseId, employeId);
+        return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
 
-    @GetMapping("/employe/salary/{entrepriseId}/{contractType}/{grille}")
+    @GetMapping("/salary/{entrepriseId}/{contractType}/{grille}")
     public BigDecimal getSalaryByEntrepriseIdAndContractType(@PathVariable Long entrepriseId,
             @PathVariable String contractType, @PathVariable String grille) {
         return employeService.getSalaryByEntrepriseIdAndContractType(entrepriseId, contractType, grille);
     }
 
-    @GetMapping("/employe/filter/{search}")
+    @GetMapping("/filter/{search}")
     public ResponseEntity<List<Employe>> filterEmploye(@PathVariable String search) {
-        try {
-            List<Employe> employeFiltered = employeService.filterEmployes(search);
-            return new ResponseEntity<>(employeFiltered, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<Employe> employeFiltered = employeService.filterEmployes(search);
+        return new ResponseEntity<>(employeFiltered, HttpStatus.OK);
     }
 }

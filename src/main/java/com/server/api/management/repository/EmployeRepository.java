@@ -1,9 +1,10 @@
 package com.server.api.management.repository;
 
-import com.server.api.management.entity.Employe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import com.server.api.management.domain.entity.Employe;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -1,17 +1,23 @@
-package com.server.api.management.entity;
+package com.server.api.management.domain.entity;
 
-import com.server.api.management.entity.enums.Role;
+import com.server.api.management.domain.enums.Role;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
-public class User extends AuditModel {
+@EqualsAndHashCode(callSuper = true)
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,11 +52,11 @@ public class User extends AuditModel {
      */
     @Column(name = "roles", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Role roles;
+    private Role role;
 
     /**
      * Indicates whether the user account is enabled.
      */
-    @Column(name = "is_enabled")
-    private boolean isEnabled;
+    @Column(name = "enabled")
+    private boolean enabled;
 }

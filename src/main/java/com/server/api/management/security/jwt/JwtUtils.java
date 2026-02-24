@@ -1,4 +1,4 @@
-package com.server.api.management.security;
+package com.server.api.management.security.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

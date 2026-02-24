@@ -14,8 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.server.api.management.security.JwtAuthenticationEntryPoint;
-import com.server.api.management.security.JwtAuthenticationFilter;
+import com.server.api.management.security.jwt.JwtAuthenticationEntryPoint;
+import com.server.api.management.security.jwt.JwtAuthenticationFilter;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Security configuration class for the management API.
@@ -23,16 +25,11 @@ import com.server.api.management.security.JwtAuthenticationFilter;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
     private final JwtAuthenticationFilter authenticationFilter;
-
-    public SecurityConfig(JwtAuthenticationEntryPoint unauthorizedHandler,
-            JwtAuthenticationFilter authenticationFilter) {
-        this.unauthorizedHandler = unauthorizedHandler;
-        this.authenticationFilter = authenticationFilter;
-    }
 
     /**
      * Configures the security filter chain.

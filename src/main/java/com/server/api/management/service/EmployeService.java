@@ -1,10 +1,9 @@
 package com.server.api.management.service;
 
-import com.server.api.management.entity.Employe;
-
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+
+import com.server.api.management.domain.entity.Employe;
 
 public interface EmployeService {
 
@@ -14,7 +13,7 @@ public interface EmployeService {
 
     List<Employe> getAllEmployes();
 
-    Employe createEmploye(Long entrepriseId, Employe employe) throws IOException;
+    Employe createEmploye(Long entrepriseId, Employe employe);
 
     Employe updateEmploye(Long entrepriseId, Employe employe);
 

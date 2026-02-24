@@ -1,8 +1,8 @@
 package com.server.api.management.service;
 
-import com.server.api.management.entity.Entreprise;
-
 import java.util.List;
+
+import com.server.api.management.domain.entity.Entreprise;
 
 public interface EntrepriseService {
 

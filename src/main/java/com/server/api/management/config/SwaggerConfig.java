@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(info = @Info(contact = @Contact(name = "", email = "admin@gmail.com", url = "#"), description = "Documentation API REST", title = "MANAGEMENT API", version = "1.0", license = @License(name = "Licence name", url = "#"), termsOfService = "Terms"), servers = {
-                @Server(description = "Dev env", url = "http://localhost:8080"),
-                @Server(description = "Prod env", url = "")
+        @Server(description = "Dev", url = "http://localhost:8080"),
+        @Server(description = "Prod", url = "")
 }, security = { @SecurityRequirement(name = "bearerAuth") })
 @SecurityScheme(name = "bearerAuth", description = "JWT auth description", scheme = "bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
 public class SwaggerConfig {

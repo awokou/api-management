@@ -1,6 +1,6 @@
 package com.server.api.management.controller;
 
-import com.server.api.management.entity.Entreprise;
+import com.server.api.management.domain.entity.Entreprise;
 import com.server.api.management.service.EntrepriseService;
 
 import lombok.RequiredArgsConstructor;
@@ -12,63 +12,44 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/entreprises")
 @RequiredArgsConstructor
 public class EntrepriseController {
 
     private final EntrepriseService entrepriseService;
 
-    @GetMapping("/entreprise/{entrepriseId}")
-    public ResponseEntity<Entreprise> getEntrepriseById(@PathVariable Long entrepriseId) {
-        try {
-            Entreprise entreprise = entrepriseService.getEntrepriseById(entrepriseId);
-            if (entreprise == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 si introuvable
-            }
-            return new ResponseEntity<>(entreprise, HttpStatus.OK); // 200 si trouvé
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500 si exception
+    @GetMapping("/{id}")
+    public ResponseEntity<Entreprise> getEntrepriseById(@PathVariable Long id) {
+        Entreprise entreprise = entrepriseService.getEntrepriseById(id);
+        if (entreprise == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+        return ResponseEntity.status(HttpStatus.OK).body(entreprise);
     }
 
-    @GetMapping("/entreprise/all")
+    @GetMapping
     public ResponseEntity<List<Entreprise>> getAllEntreprises() {
-        try {
-            List<Entreprise> entrepriseList = entrepriseService.getAllEntreprises();
-            return new ResponseEntity<>(entrepriseList, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<Entreprise> entrepriseList = entrepriseService.getAllEntreprises();
+        return ResponseEntity.status(HttpStatus.OK).body(entrepriseList);
     }
 
-    @PostMapping("/entreprise/create")
+    @PostMapping
     public ResponseEntity<Entreprise> createPost(@RequestBody Entreprise entreprise) {
-        try {
-            Entreprise entrepriseCreate = entrepriseService.createEntreprise(entreprise);
-            return new ResponseEntity<>(entrepriseCreate, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Entreprise entrepriseCreate = entrepriseService.createEntreprise(entreprise);
+        // Pour tes tests, on retourne 200 OK
+        return ResponseEntity.status(HttpStatus.OK).body(entrepriseCreate);
     }
 
-    @PutMapping("/entreprise/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Entreprise> updateEntreprise(@PathVariable Long id,
             @RequestBody Entreprise entrepriseRequest) {
-        try {
-            Entreprise entreprise = entrepriseService.updateEntreprise(id, entrepriseRequest);
-            return new ResponseEntity<>(entreprise, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Entreprise entreprise = entrepriseService.updateEntreprise(id, entrepriseRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(entreprise);
     }
 
-    @DeleteMapping("/entreprise/delete/{entrepriseId}")
-    public ResponseEntity<Entreprise> deleteEntreprise(@PathVariable Long entrepriseId) {
-        try {
-            Entreprise deleted = entrepriseService.deleteEntreprise(entrepriseId);
-            return new ResponseEntity<>(deleted, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);// returns 500 if exception occurs
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Entreprise> deleteEntreprise(@PathVariable Long id) {
+        Entreprise deleted = entrepriseService.deleteEntreprise(id);
+        return ResponseEntity.status(HttpStatus.OK).body(deleted);
     }
 }

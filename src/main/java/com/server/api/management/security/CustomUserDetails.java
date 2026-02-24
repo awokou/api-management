@@ -1,9 +1,9 @@
 package com.server.api.management.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.server.api.management.entity.User;
+import com.server.api.management.domain.entity.User;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
+@Builder
 public class CustomUserDetails implements UserDetails {
 
     @Serial
@@ -32,15 +32,16 @@ public class CustomUserDetails implements UserDetails {
 
     public static CustomUserDetails build(User user) {
 
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRoles().name()));
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
 
-        return new CustomUserDetails(
-                user.getId(),
-                user.getFullName(),
-                user.getEmail(),
-                user.getPassword(),
-                user.isEnabled(),
-                authorities);
+        return CustomUserDetails.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .enabled(user.isEnabled())
+                .authorities(authorities)
+                .build();
     }
 
     @Override
@@ -56,6 +57,21 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
     @Override

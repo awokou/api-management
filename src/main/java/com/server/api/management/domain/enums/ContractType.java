@@ -1,4 +1,4 @@
-package com.server.api.management.entity.enums;
+package com.server.api.management.domain.enums;
 
 public enum ContractType {
     CDD,

@@ -1,4 +1,4 @@
-package com.server.api.management.entity;
+package com.server.api.management.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -13,11 +13,8 @@ import java.util.Date;
 @Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(
-        value = {"createdAt", "updatedAt"},
-        allowGetters = true
-)
-public abstract class AuditModel implements Serializable {
+@JsonIgnoreProperties(value = { "createdAt", "updatedAt" }, allowGetters = true)
+public abstract class BaseEntity implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)

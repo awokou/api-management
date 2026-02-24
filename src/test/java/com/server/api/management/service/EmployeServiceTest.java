@@ -1,8 +1,8 @@
 package com.server.api.management.service;
 
-import com.server.api.management.entity.Employe;
-import com.server.api.management.entity.Entreprise;
-import com.server.api.management.entity.enums.ContractType;
+import com.server.api.management.domain.entity.Employe;
+import com.server.api.management.domain.entity.Entreprise;
+import com.server.api.management.domain.enums.ContractType;
 import com.server.api.management.exception.ResourceNotFoundException;
 import com.server.api.management.repository.EmployeRepository;
 import com.server.api.management.repository.EntrepriseRepository;

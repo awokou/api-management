@@ -1,10 +1,11 @@
-package com.server.api.management.entity;
+package com.server.api.management.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.server.api.management.entity.enums.ContractType;
+import com.server.api.management.domain.enums.ContractType;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -17,8 +18,11 @@ import java.util.Date;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "employe")
-public class Employe extends AuditModel {
+@EqualsAndHashCode(callSuper = true)
+public class Employe extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

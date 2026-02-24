@@ -1,4 +1,4 @@
-package com.server.api.management.security;
+package com.server.api.management.security.jwt;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

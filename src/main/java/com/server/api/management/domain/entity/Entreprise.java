@@ -1,4 +1,4 @@
-package com.server.api.management.entity;
+package com.server.api.management.domain.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -8,8 +8,11 @@ import lombok.*;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "entreprise")
-public class Entreprise extends AuditModel {
+@EqualsAndHashCode(callSuper = true)
+public class Entreprise extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

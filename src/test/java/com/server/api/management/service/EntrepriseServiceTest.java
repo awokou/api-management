@@ -1,6 +1,6 @@
 package com.server.api.management.service;
 
-import com.server.api.management.entity.Entreprise;
+import com.server.api.management.domain.entity.Entreprise;
 import com.server.api.management.exception.ResourceNotFoundException;
 import com.server.api.management.repository.EntrepriseRepository;
 import com.server.api.management.service.impl.EntrepriseServiceImpl;
