@@ -31,15 +31,8 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
     private final JwtAuthenticationFilter authenticationFilter;
 
-    /**
-     * Configures the security filter chain.
-     *
-     * @param http the HttpSecurity to configure
-     * @return the configured SecurityFilterChain
-     * @throws Exception if an error occurs during configuration
-     */
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception
@@ -47,8 +40,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs",
-                                "/v3/api-docs/**")
+                        .requestMatchers("/api/v1/**", "/swagger-ui/**", "/v3/api-docs/**")
                         .permitAll()
                         .anyRequest().authenticated());
 
@@ -57,27 +49,13 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * Bean for password encoding using BCrypt.
-     *
-     * @return the PasswordEncoder
-     */
     @Bean
-    PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Bean for the AuthenticationManager.
-     *
-     * @param authenticationConfiguration the AuthenticationConfiguration
-     * @return the AuthenticationManager
-     * @throws Exception if an error occurs while retrieving the
-     *                   AuthenticationManager
-     */
     @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }

@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.server.api.management.dto.AuthResponse;
-import com.server.api.management.dto.LoginDto;
+import com.server.api.management.domain.dto.response.AuthResponse;
+import com.server.api.management.domain.dto.external.LoginDto;
 import com.server.api.management.service.UserService;
 
 import jakarta.validation.Valid;

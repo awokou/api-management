@@ -1,4 +1,4 @@
-package com.server.api.management.dto;
+package com.server.api.management.domain.dto.external;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

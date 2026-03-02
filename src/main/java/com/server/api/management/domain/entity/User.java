@@ -24,7 +24,6 @@ public class User extends BaseEntity {
     private Long id;
 
     @NotBlank(message = "Le nom et Prenom est obligatoire")
-    @Size(min = 5, max = 100, message = "Le nom et Prenom doit être compris entre 5 et 100 caractères")
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
@@ -50,13 +49,9 @@ public class User extends BaseEntity {
      * Roles assigned to the user. Cannot be null.
      *
      */
-    @Column(name = "roles", nullable = false)
+    @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    /**
-     * Indicates whether the user account is enabled.
-     */
-    @Column(name = "enabled")
     private boolean enabled;
 }

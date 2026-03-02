@@ -1,5 +1,6 @@
 package com.server.api.management.service.impl;
 
+import com.server.api.management.exception.ResourceNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,8 +9,8 @@ import org.springframework.security.core.Authentication;
 
 import com.server.api.management.domain.entity.User;
 import com.server.api.management.domain.enums.TokenType;
-import com.server.api.management.dto.AuthResponse;
-import com.server.api.management.dto.LoginDto;
+import com.server.api.management.domain.dto.response.AuthResponse;
+import com.server.api.management.domain.dto.external.LoginDto;
 import com.server.api.management.repository.UserRepository;
 import com.server.api.management.security.jwt.JwtUtils;
 import com.server.api.management.service.UserService;
@@ -36,14 +37,14 @@ public class UserServiceImpl implements UserService {
         String token = jwtUtils.generateJwtToken(authentication);
 
         User user = userRepository.findByEmail(loginDto.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return AuthResponse.builder()
                 .accessToken(token)
                 .id(user.getId())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
-                .roles(user.getRole().name())
+                .role(user.getRole().name())
                 .tokenType(TokenType.BEARER.name())
                 .build();
     }

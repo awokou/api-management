@@ -142,7 +142,6 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>**/ApiManagementApplication.class</exclude>
                         <exclude>**/config/**</exclude>
 						<exclude>**/domain/**</exclude>
 						<exclude>**/security/**</exclude>

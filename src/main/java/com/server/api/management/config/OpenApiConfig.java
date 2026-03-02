@@ -17,5 +17,5 @@ import org.springframework.context.annotation.Configuration;
         @Server(description = "Prod", url = "")
 }, security = { @SecurityRequirement(name = "bearerAuth") })
 @SecurityScheme(name = "bearerAuth", description = "JWT auth description", scheme = "bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
-public class SwaggerConfig {
+public class OpenApiConfig {
 }

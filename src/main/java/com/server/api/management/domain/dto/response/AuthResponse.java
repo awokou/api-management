@@ -1,4 +1,4 @@
-package com.server.api.management.dto;
+package com.server.api.management.domain.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -11,7 +11,7 @@ public class AuthResponse {
     private Long id;
     private String fullName;
     private String email;
-    private String roles;
+    private String role;
 
     @JsonProperty("access_token")
     private String accessToken;
