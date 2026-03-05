@@ -1,17 +1,10 @@
 package com.server.api.management.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.server.api.management.domain.enums.ContractType;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -28,13 +21,11 @@ public class Employe extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Le nom est obligatoire")
-    @Size(min = 5, max = 100, message = "Le nom doit être compris entre 5 et 100 caractères")
+    @NotBlank(message = "Le prénom est obligatoire")
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @NotBlank(message = "Le prénom est obligatoire")
-    @Size(min = 5, max = 100, message = "Le prénom doit être compris entre 5 et 100 caractères")
+    @NotBlank(message = "Le nom est obligatoire")
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
@@ -52,11 +43,7 @@ public class Employe extends BaseEntity {
 
     private String fileName;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "entreprise_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    @JsonProperty("entreprise_id")
     private Entreprise entreprise;
 }

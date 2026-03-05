@@ -1,3 +1,6 @@
+server:
+  port: 8080
+  
 spring:
   application:
     name: api-management
@@ -16,5 +19,11 @@ spring:
       ddl-auto: none
 
 jwt:
-  jwtSecret: 2b44b0b00fd822d8ce753e54dac3dc4e06c2725f7db930f3b9924468b53194dbccdbe23d7baa5ef5fbc414ca4b2e64700bad60c5a7c45eaba56880985582fba4
-  jwtExpirationMs: 86400000
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  expiration: 86400000
+
+logging:
+  level:
+    org.springframework.web: INFO
+    org.springframework.security: DEBUG
+    com.server: DEBUG

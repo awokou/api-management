@@ -2,7 +2,6 @@ package com.server.api.management.domain.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 
@@ -19,7 +18,6 @@ public class Entreprise extends BaseEntity {
     private Long id;
 
     @NotBlank(message = "La raison sociale ne doit pas être vide.")
-    @Size(min = 5, max = 100, message = "La raison sociale doit être comprise entre 5 et 100 caractères.")
     @Column(name = "social_reason",nullable = false)
     private String socialReason;
 
@@ -32,7 +30,6 @@ public class Entreprise extends BaseEntity {
     private String siren;
 
     @NotBlank(message = "L'adresse est obligatoire")
-    @Size(min = 5, max = 100, message = "L'adresse doit être comprise entre 5 et 100 caractères.")
     @Column(name = "address",nullable = false)
     private String address;
 }
