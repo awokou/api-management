@@ -33,7 +33,7 @@ public class JwtUtils {
     }
 
     public String getUserNameFromJwtToken(String token) {
-       return Jwts.parser()
+        return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
@@ -55,7 +55,7 @@ public class JwtUtils {
         return false;
     }
 
-     private SecretKey getSigningKey() {
+    private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
