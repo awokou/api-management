@@ -4,6 +4,7 @@ import com.server.api.management.domain.enums.ContractType;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -32,10 +33,10 @@ public class Employe extends BaseEntity {
     @NotBlank(message = "Le numéro de sécurité sociale est obligatoire")
     private String socialSecurityNumber;
 
-    @NotBlank(message = "Le date d’embauche est obligatoire")
+    @NotNull(message = "Le date d'embauche est obligatoire")
     private Date hiringDate;
 
-    @NotBlank(message = "Le type de contrat est obligatoire")
+    @NotNull(message = "Le type de contrat est obligatoire")
     @Enumerated(EnumType.STRING)
     private ContractType contractType;
 

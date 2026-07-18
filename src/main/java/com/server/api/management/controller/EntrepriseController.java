@@ -36,8 +36,7 @@ public class EntrepriseController {
     @PostMapping
     public ResponseEntity<Entreprise> createPost(@RequestBody Entreprise entreprise) {
         Entreprise entrepriseCreate = entrepriseService.createEntreprise(entreprise);
-        // Pour tes tests, on retourne 200 OK
-        return ResponseEntity.status(HttpStatus.OK).body(entrepriseCreate);
+        return ResponseEntity.status(HttpStatus.CREATED).body(entrepriseCreate);
     }
 
     @PutMapping("/{id}")

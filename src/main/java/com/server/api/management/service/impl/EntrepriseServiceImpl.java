@@ -45,14 +45,13 @@ public class EntrepriseServiceImpl implements EntrepriseService {
     @Override
     @Transactional
     public Entreprise updateEntreprise(Long id, Entreprise entrepriseRequest) {
-        log.info("Update entreprise {},{}", entrepriseRequest, entrepriseRequest.getId());
+        log.info("Update entreprise {},{}", entrepriseRequest, id);
         Entreprise entreprise = entrepriseRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("entrepriseId " + entrepriseRequest.getId() + " not found"));
+                () -> new ResourceNotFoundException("entrepriseId " + id + " not found"));
         entreprise.setAddress(entrepriseRequest.getAddress());
         entreprise.setSiren(entrepriseRequest.getSiren());
         entreprise.setSiret(entrepriseRequest.getSiret());
         entreprise.setSocialReason(entrepriseRequest.getSocialReason());
-        entreprise.setCreatedAt(new Date());
 
         return entrepriseRepository.save(entreprise);
     }

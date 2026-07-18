@@ -52,7 +52,7 @@ public class EmployeServiceImpl implements EmployeService {
 
         log.info("Create new employe By Entreprise id {} , {}", employe, entrepriseId);
 
-        if (employe.getSalary().compareTo(BigDecimal.ZERO) < 0) {
+        if (employe.getSalary() != null && employe.getSalary().compareTo(BigDecimal.ZERO) < 0) {
             throw new ResourceNotFoundException("Le salaire doit être supérieur à zéro");
         }
 
@@ -70,24 +70,21 @@ public class EmployeServiceImpl implements EmployeService {
         log.info("Update employe By Entreprise id {} , {}", employeRequest, entrepriseId);
 
         Employe employe = employeRepository.findById(employeRequest.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("employeId " + employeRequest.getId() + "not found"));
-
-        Employe oldEmploye = employeRepository.findById(employeRequest.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Employé " + employeRequest.getId() + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("employeId " + employeRequest.getId() + " not found"));
 
         if (!entrepriseRepository.existsById(entrepriseId)) {
             throw new ResourceNotFoundException("Entreprise " + entrepriseId + " not found");
         }
 
         // Validation du changement de type de contrat
-        if ((oldEmploye.getContractType().equals(ContractType.CDD) ||
-                oldEmploye.getContractType().equals(ContractType.CDI) &&
-                        employeRequest.getContractType().equals(ContractType.ALTERNANCE))) {
+        if (((employe.getContractType().equals(ContractType.CDD) ||
+                employe.getContractType().equals(ContractType.CDI)) &&
+                employeRequest.getContractType().equals(ContractType.ALTERNANCE))) {
             throw new ResourceNotFoundException("un employé ne peut pas changer de contrat CDI ou CDD vers alternance");
         }
 
         // Validation du salaire
-        if (employeRequest.getSalary().compareTo(BigDecimal.ZERO) < 0) {
+        if (employeRequest.getSalary() != null && employeRequest.getSalary().compareTo(BigDecimal.ZERO) < 0) {
             throw new ResourceNotFoundException("Le salaire doit être supérieur à zéro");
         }
 
